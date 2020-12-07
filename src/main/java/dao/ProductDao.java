@@ -96,13 +96,15 @@ public class ProductDao implements IDao<Product> {
     public List<Product> findByName(String name) {
         List<Product> products = new ArrayList<>();
         try {
-            String query = "SELECT * FROM `products` WHERE `name` LIKE ? ORDER BY `name` DESC";
+            String query = "SELECT p.*, c.name as category_name FROM products p " +
+                    "INNER JOIN categories c on p.category_id = c.id WHERE p.name LIKE ? ORDER BY id DESC";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, '%' + name + '%');
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Product customer = extractProductResultset(rs);
-                products.add(customer);
+                Product product = extractProductResultset(rs);
+                product.setCategoryName(rs.getString("category_name"));
+                products.add(product);
             }
             rs.close();
             stmt.close();
