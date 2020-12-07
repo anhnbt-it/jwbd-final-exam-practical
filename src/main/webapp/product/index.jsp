@@ -13,21 +13,23 @@
     <div class="row">
         <div class="col-md-6">
             <a href="${pageContext.request.contextPath}/admin/products?act=create"
-                    class="btn btn-primary btn-sm"
-                    data-toggle="tooltip" data-placement="top" title="Add New Product"><i class="fas fa-plus"></i> Add
+               class="btn btn-primary btn-sm"
+               data-toggle="tooltip" data-placement="top" title="Add New Product"><i class="fas fa-plus"></i> Add
                 New Product</a>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 float-right">
             <form action="${pageContext.request.contextPath}/admin/products" method="get" class="form-inline">
-                    <input type="hidden" name="act" value="search">
-                    <div class="form-group mb-2">
-                        <label for="query" class="sr-only">Search:</label>
-                        <input type="text" class="form-control" name="query" id="query"
-                               placeholder="Search" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary mb-2" data-toggle="tooltip" data-placement="top"
-                            title="Filter"><i class="fas fa-search"></i> Search
-                    </button>
+                <input type="hidden" name="act" value="search">
+                <div class="form-group mb-2">
+                    <label for="query" class="sr-only">Search:</label>
+                    <input type="text" class="form-control" name="query" id="query"
+                           placeholder="Search"
+                           value="<% if (request.getParameter("query") != null) { %><%=request.getParameter("query")%><% } %>"
+                           required>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2" data-toggle="tooltip" data-placement="top"
+                        title="Filter"><i class="fas fa-search"></i> Search
+                </button>
             </form>
         </div>
     </div>
@@ -43,10 +45,16 @@
                     <% session.removeAttribute("msg"); %>
                     <% } %>
                     <c:choose>
-                        <c:when test="${requestScope['products'] == null}">
-                            <div class="alert alert-info">No data.</div>
+                        <c:when test="${requestScope['products'].size() == 0}">
+                            <div class="alert alert-info">No data, <a href="${pageContext.request.contextPath}/admin/products">Refresh page</a></div>
                         </c:when>
                         <c:otherwise>
+
+                            <% if (request.getParameter("query") != null) { %>
+                            <div class="alert alert-info">Found ${requestScope['products'].size()} results for the
+                                keyword: <strong><%=request.getParameter("query")%></strong>, <a href="${pageContext.request.contextPath}/admin/products">Refresh page</a>
+                            </div>
+                            <% } %>
 
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered" id="dataTable">
@@ -73,11 +81,12 @@
                                             <td>
                                                 <a href="${pageContext.request.contextPath}/admin/products?act=edit&id=${product.getId()}"
                                                    class="btn btn-info" data-toggle="tooltip" data-placement="top"
-                                                   title="Edit"><i class="fas fa-pen"></i></a> | <a href="${pageContext.request.contextPath}/admin/products?act=delete&id=${product.getId()}"
-                                                   class="btn btn-danger" data-toggle="tooltip" data-placement="top"
-                                                   title="Delete"
-                                                   onclick="return confirm('Are you sure you want to delete this item?');"><i
-                                                        class="fas fa-trash"></i></a>
+                                                   title="Edit"><i class="fas fa-pen"></i></a> | <a
+                                                    href="${pageContext.request.contextPath}/admin/products?act=delete&id=${product.getId()}"
+                                                    class="btn btn-danger" data-toggle="tooltip" data-placement="top"
+                                                    title="Delete"
+                                                    onclick="return confirm('Are you sure you want to delete this item?');"><i
+                                                    class="fas fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -91,5 +100,6 @@
             </div><!-- /.card -->
         </div><!-- /.col-md-12 -->
     </div><!-- /.row -->
-</div><!-- /.container-fluid -->
+</div>
+<!-- /.container-fluid -->
 <jsp:include page="../inc/footer.jsp"></jsp:include>
