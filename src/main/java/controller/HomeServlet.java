@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet(name = "HomeServlet", urlPatterns = "")
 public class HomeServlet extends HttpServlet {
@@ -20,8 +20,12 @@ public class HomeServlet extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
-        dispatcher.forward(request, response);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<Product> products = productDao.getRecords();
+        req.setAttribute("products", products);
+
+        req.getRequestDispatcher("/product/index.jsp").forward(req, resp);
+        RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
+        dispatcher.forward(req, resp);
     }
 }
