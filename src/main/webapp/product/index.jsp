@@ -17,10 +17,10 @@
                data-toggle="tooltip" data-placement="top" title="Add New Product"><i class="fas fa-plus"></i> Add
                 New Product</a>
         </div>
-        <div class="col-md-6 float-right">
-            <form action="${pageContext.request.contextPath}/admin/products" method="get" class="form-inline">
+        <div class="col-md-6">
+            <form action="${pageContext.request.contextPath}/admin/products" method="get" class="form-inline float-right">
                 <input type="hidden" name="act" value="search">
-                <div class="form-group mb-2">
+                <div class="form-group mb-2 mr-2">
                     <label for="query" class="sr-only">Search:</label>
                     <input type="text" class="form-control" name="query" id="query"
                            placeholder="Search"
