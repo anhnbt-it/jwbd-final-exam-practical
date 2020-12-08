@@ -49,7 +49,6 @@ public class ProductDao implements IDao<Product> {
             pstmt.setString(5, obj.getDesc());
             pstmt.setInt(6, obj.getCategoryId());
             pstmt.setInt(7, obj.getId());
-            System.out.println(obj.toString());
             result = pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException e) {
