@@ -23,13 +23,8 @@ public class Product {
     }
 
     public Product(int id, String name, double price, int qty, String color, String desc, int categoryId) {
+        this(name, price, qty, color, desc, categoryId);
         this.id = id;
-        this.name = name;
-        this.price = price;
-        this.qty = qty;
-        this.color = color;
-        this.desc = desc;
-        this.categoryId = categoryId;
     }
 
     public int getId() {
