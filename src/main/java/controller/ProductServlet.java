@@ -60,12 +60,11 @@ public class ProductServlet extends HttpServlet {
                 case "search":
                     searchProduct(req, resp);
                     break;
-
                 default:
                     showAllProducts(req, resp);
             }
-        } catch (SQLException | ServletException | IOException e) {
-            e.printStackTrace();
+        } catch (SQLException | ServletException | IOException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -83,15 +82,7 @@ public class ProductServlet extends HttpServlet {
         String color = req.getParameter("color");
         String desc = req.getParameter("desc");
         int category = Integer.parseInt(req.getParameter("category"));
-
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        product.setQty(qty);
-        product.setColor(color);
-        product.setDesc(desc);
-        product.setCategoryId(category);
-
+        Product product = new Product(name, price, qty, color, desc, category);
         try {
             if (productDao.add(product)) {
                 session.setAttribute("msg", "<div class=\"alert alert alert-success\">New product created successfully.</div>");
@@ -107,15 +98,13 @@ public class ProductServlet extends HttpServlet {
     private void editProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         session = req.getSession();
         int id = Integer.parseInt(req.getParameter("id"));
-        Product product;
         try {
-            product = productDao.findById(id);
+            Product product = productDao.findById(id);
             if (product == null) {
                 session.setAttribute("msg", "<div class=\"alert alert alert-danger\">Product not found.</div>");
                 resp.sendRedirect("/admin/products");
             } else {
                 req.setAttribute("product", product);
-
                 List<Category> categories = categoryDao.getRecords();
                 req.setAttribute("categories", categories);
                 req.getRequestDispatcher("/product/edit.jsp").forward(req, resp);
@@ -127,7 +116,6 @@ public class ProductServlet extends HttpServlet {
 
     private void updateProduct(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         session = req.getSession();
-
         int id = Integer.parseInt(req.getParameter("id"));
         String name = req.getParameter("name");
         double price = Double.parseDouble(req.getParameter("price"));
@@ -136,21 +124,13 @@ public class ProductServlet extends HttpServlet {
         String desc = req.getParameter("desc");
         int category = Integer.parseInt(req.getParameter("category"));
 
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        product.setQty(qty);
-        product.setColor(color);
-        product.setDesc(desc);
-        product.setCategoryId(category);
+        Product product = new Product(id, name, price, qty, color, desc, category);
 
         if (productDao.edit(product)) {
             session.setAttribute("msg", "<div class=\"alert alert alert-success\">Record updated successfully.</div>");
         } else {
             session.setAttribute("msg", "<div class=\"alert alert alert-danger\">UPDATE fails.</div>");
         }
-
         resp.sendRedirect("/admin/products");
     }
 
@@ -180,10 +160,8 @@ public class ProductServlet extends HttpServlet {
     }
 
     public void showAllProducts(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         List<Product> products = productDao.getRecords();
         req.setAttribute("products", products);
-
         req.getRequestDispatcher("/product/index.jsp").forward(req, resp);
     }
 
